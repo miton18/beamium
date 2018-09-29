@@ -43,6 +43,8 @@ pub struct Scraper {
     pub metrics: Option<regex::RegexSet>,
     pub headers: HashMap<String, String>,
     pub labels: HashMap<String, String>,
+    pub tls_key: String,
+    pub tls_cert: String,
 }
 
 #[derive(Debug, Clone)]
@@ -332,6 +334,12 @@ fn load_path<P: AsRef<Path>>(file_path: P, config: &mut Config) -> Result<(), Co
                             labels.insert(String::from(lname), String::from(value));
                         }
                     }
+                    let tls_key = k
+                        .as_str()
+                        .ok_or_else(|| format!("{} keys should be a string", key))?;
+                    let tls_cert = k
+                        .as_str()
+                        .ok_or_else(|| format!("{} keys should be a string", key))?;
 
                     config.scrapers.push(Scraper {
                         name: String::from(name),
@@ -341,6 +349,8 @@ fn load_path<P: AsRef<Path>>(file_path: P, config: &mut Config) -> Result<(), Co
                         metrics,
                         headers,
                         labels,
+                        tls_key: String::from(tls_key),
+                        tls_cert: String::from(tls_cert)
                     })
                 }
             }
